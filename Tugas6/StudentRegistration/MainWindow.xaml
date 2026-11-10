@@ -1,0 +1,382 @@
+﻿<Window x:Class="StudentRegistration.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Student Hub | Student Directory"
+        Height="750" Width="1200"
+        MinHeight="600" MinWidth="950"
+        WindowStartupLocation="CenterScreen"
+        Background="#FFF8F2"
+        FontFamily="Segoe UI">
+
+    <Window.Resources>
+
+        <!-- ROUNDED REFRESH BUTTON -->
+        <Style x:Key="RefreshStyle" TargetType="Button">
+            <Setter Property="Background" Value="#C0350F"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Padding" Value="22,13"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="BorderThickness" Value="0"/>
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="ButtonBorder"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="14"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ButtonBorder"
+                                        Property="Background"
+                                        Value="#A92D0E"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- TABLE HEADER STYLE -->
+        <Style x:Key="TableHeaderStyle"
+               TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="#F7E6D2"/>
+            <Setter Property="Foreground" Value="#642F37"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Padding" Value="12,10"/>
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
+
+        <Style x:Key="TableCellStyle"
+               TargetType="DataGridCell">
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="VerticalContentAlignment"
+                    Value="Center"/>
+        </Style>
+
+    </Window.Resources>
+
+    <!-- MAIN LAYOUT -->
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="275"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- LEFT SIDEBAR -->
+        <Border Grid.Column="0"
+                Background="#642F37"
+                CornerRadius="0,25,25,0">
+
+            <Grid Margin="28,32">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- BRAND -->
+                <StackPanel Grid.Row="0">
+                    <Border Background="#F3904B"
+                            Width="52" Height="52"
+                            CornerRadius="15"
+                            HorizontalAlignment="Left">
+                        <TextBlock Text="SR"
+                                   FontSize="21"
+                                   FontWeight="Bold"
+                                   Foreground="#642F37"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"/>
+                    </Border>
+
+                    <TextBlock Text="STUDENT HUB"
+                               FontSize="16"
+                               FontWeight="Bold"
+                               Foreground="White"
+                               Margin="0,20,0,4"/>
+
+                    <TextBlock Text="Academic Database System"
+                               FontSize="12"
+                               Foreground="#D9BFCB"/>
+                </StackPanel>
+
+                <!-- STUDENT SUMMARY -->
+                <StackPanel Grid.Row="1"
+                            VerticalAlignment="Center">
+
+                    <TextBlock Text="ACADEMIC RECORDS"
+                               FontSize="11"
+                               FontWeight="Bold"
+                               Foreground="#F7C767"
+                               Margin="0,0,0,14"/>
+
+                    <TextBlock Text="Student"
+                               FontSize="32"
+                               FontWeight="Bold"
+                               Foreground="White"/>
+
+                    <TextBlock Text="Directory"
+                               FontSize="32"
+                               FontWeight="Bold"
+                               Foreground="White"/>
+
+                    <Border Height="2"
+                            Background="#F3904B"
+                            Margin="0,24,40,26"/>
+
+                    <TextBlock Text="TOTAL MAHASISWA"
+                               FontSize="12"
+                               FontWeight="SemiBold"
+                               Foreground="#F7C767"/>
+
+                    <TextBlock x:Name="TotalText"
+                               Text="0"
+                               FontSize="76"
+                               FontWeight="Bold"
+                               Foreground="White"
+                               Margin="0,8,0,0"/>
+
+                    <TextBlock Text="Mahasiswa terdaftar"
+                               FontSize="13"
+                               Foreground="#D9BFCB"/>
+                </StackPanel>
+
+                <!-- DATABASE STATUS -->
+                <Border Grid.Row="2"
+                        Background="#794550"
+                        CornerRadius="16"
+                        Padding="18">
+
+                    <StackPanel>
+                        <TextBlock Text="DATABASE STATUS"
+                                   FontSize="11"
+                                   FontWeight="Bold"
+                                   Foreground="#F7C767"/>
+
+                        <TextBlock x:Name="StatusText"
+                                   Text="Belum terhubung"
+                                   FontSize="14"
+                                   FontWeight="SemiBold"
+                                   Foreground="White"
+                                   TextWrapping="Wrap"
+                                   Margin="0,12,0,6"/>
+
+                        <TextBlock Text="SQL Server"
+                                   FontSize="12"
+                                   Foreground="#D9BFCB"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- RIGHT CONTENT AREA -->
+        <Grid Grid.Column="1"
+              Margin="34,30,34,24">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- PAGE HEADER -->
+            <Grid Grid.Row="0" Margin="0,0,0,25">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel>
+                    <TextBlock Text="OVERVIEW / STUDENTS"
+                               FontSize="11"
+                               FontWeight="SemiBold"
+                               Foreground="#C0350F"
+                               Margin="0,0,0,8"/>
+
+                    <TextBlock Text="Student Overview"
+                               FontSize="29"
+                               FontWeight="Bold"
+                               Foreground="#642F37"/>
+
+                    <TextBlock
+                        Text="Kelola dan pantau data mahasiswa"
+                        FontSize="13"
+                        Foreground="#886D77"
+                        Margin="0,6,0,0"/>
+                </StackPanel>
+
+                <Button x:Name="RefreshButton"
+                        Grid.Column="1"
+                        Content="↻  Refresh Data"
+                        Style="{StaticResource RefreshStyle}"
+                        VerticalAlignment="Center"/>
+            </Grid>
+
+            <!-- INFORMATION BANNER -->
+            <Border Grid.Row="1"
+                    Background="#F7C767"
+                    CornerRadius="18"
+                    Padding="24"
+                    Margin="0,0,0,22">
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel>
+                        <TextBlock Text="STUDENT DATABASE"
+                                   FontSize="11"
+                                   FontWeight="Bold"
+                                   Foreground="#642F37"/>
+
+                        <TextBlock
+                            Text="Data akademik, lebih tertata."
+                            FontSize="20"
+                            FontWeight="SemiBold"
+                            Foreground="#642F37"
+                            Margin="0,8,0,0"/>
+
+                        <TextBlock
+                            Text="StudentRegistrationDB"
+                            FontSize="12"
+                            Foreground="#642F37"
+                            Margin="0,6,0,0"/>
+                    </StackPanel>
+
+                    <Border Grid.Column="1"
+                            Background="#B89DBB"
+                            CornerRadius="12"
+                            Padding="15,9"
+                            VerticalAlignment="Center">
+                        <TextBlock Text="SQL SERVER"
+                                   FontSize="11"
+                                   FontWeight="Bold"
+                                   Foreground="#642F37"/>
+                    </Border>
+                </Grid>
+            </Border>
+
+            <!-- STUDENT DATA TABLE -->
+            <Border Grid.Row="2"
+                    Background="White"
+                    CornerRadius="20"
+                    Padding="20"
+                    BorderThickness="1"
+                    BorderBrush="#F3E5DE">
+
+                <DockPanel LastChildFill="True">
+
+                    <StackPanel DockPanel.Dock="Top"
+                                Margin="0,0,0,18">
+
+                        <TextBlock Text="Daftar Mahasiswa"
+                                   FontSize="19"
+                                   FontWeight="Bold"
+                                   Foreground="#642F37"/>
+
+                        <TextBlock
+                            Text="Informasi mahasiswa dan program studi"
+                            FontSize="12"
+                            Foreground="#886D77"
+                            Margin="0,5,0,0"/>
+                    </StackPanel>
+
+                    <DataGrid x:Name="StudentDataGrid"
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True"
+                              CanUserAddRows="False"
+                              CanUserDeleteRows="False"
+                              HeadersVisibility="Column"
+                              GridLinesVisibility="None"
+                              RowHeight="44"
+                              ColumnHeaderHeight="45"
+                              Background="White"
+                              Foreground="#642F37"
+                              BorderThickness="0"
+                              AlternatingRowBackground="#FFF6F0"
+                              ColumnHeaderStyle="{StaticResource TableHeaderStyle}"
+                              CellStyle="{StaticResource TableCellStyle}"
+                              HorizontalScrollBarVisibility="Auto"
+                              VerticalScrollBarVisibility="Auto">
+
+                        <DataGrid.Columns>
+
+                            <DataGridTextColumn
+                                Header="ID"
+                                Binding="{Binding StudentId}"
+                                Width="55"/>
+
+                            <DataGridTextColumn
+                                Header="NIM"
+                                Binding="{Binding NIM}"
+                                Width="115"/>
+
+                            <DataGridTextColumn
+                                Header="Nama Mahasiswa"
+                                Binding="{Binding Name}"
+                                Width="175"/>
+
+                            <DataGridTextColumn
+                                Header="Program Studi"
+                                Binding="{Binding ProgramName}"
+                                Width="180"/>
+
+                            <DataGridTextColumn
+                                Header="Tanggal Lahir"
+                                Binding="{Binding BirthDate,
+                                StringFormat={}{0:dd MMM yyyy}}"
+                                Width="125"/>
+
+                            <DataGridTextColumn
+                                Header="Alamat"
+                                Binding="{Binding Address}"
+                                Width="220"/>
+
+                            <DataGridTextColumn
+                                Header="Telepon"
+                                Binding="{Binding PhoneNumber}"
+                                Width="135"/>
+
+                            <DataGridTextColumn
+                                Header="Dibuat Pada"
+                                Binding="{Binding CreatedAt,
+                                StringFormat={}{0:dd MMM yyyy HH:mm}}"
+                                Width="160"/>
+
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
+            </Border>
+
+            <!-- FOOTER -->
+            <Grid Grid.Row="3" Margin="0,16,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Text="STUDENT HUB  /  ACADEMIC RECORDS"
+                           FontSize="11"
+                           FontWeight="SemiBold"
+                           Foreground="#B89DBB"/>
+
+                <TextBlock x:Name="LastUpdatedText"
+                           Grid.Column="1"
+                           Text="Terakhir diperbarui: -"
+                           FontSize="12"
+                           Foreground="#886D77"/>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>
